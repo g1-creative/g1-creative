@@ -2,8 +2,8 @@ name: Metrics
 
 on:
   schedule:
-    - cron: "0 6 * * *"      # daily at 06:00 UTC
-  workflow_dispatch:          # lets you run it manually from the Actions tab
+    - cron: "0 6 * * *"
+  workflow_dispatch:
   push:
     branches: [main]
 
@@ -11,7 +11,6 @@ permissions:
   contents: write
 
 jobs:
-  # ── Main stats card ────────────────────────────────────────────────
   main:
     runs-on: ubuntu-latest
     steps:
@@ -23,8 +22,11 @@ jobs:
           template: classic
           base: header, activity, community, repositories, metadata
           config_timezone: America/New_York
-          config_theme: dark
           config_animations: yes
+          extras_css: |
+            svg { background: #0d1117; color: #c9d1d9; }
+            h2 { color: #58a6ff; }
+            .field svg, svg .octicon { fill: #8b949e; }
 
           plugin_languages: yes
           plugin_languages_indepth: yes
@@ -36,23 +38,12 @@ jobs:
           plugin_lines_sections: base, history
           plugin_lines_history_limit: 1
 
-          plugin_habits: yes
-          plugin_habits_from: 200
-          plugin_habits_days: 14
-          plugin_habits_facts: yes
-          plugin_habits_charts: yes
-
-          plugin_achievements: yes
-          plugin_achievements_display: compact
-          plugin_achievements_threshold: C
-
           plugin_repositories: yes
           plugin_repositories_featured: g1-creative/leagueville
 
           plugin_code: yes
           plugin_code_lines: 12
 
-  # ── Isometric 3D commit calendar ───────────────────────────────────
   isocalendar:
     runs-on: ubuntu-latest
     steps:
@@ -63,13 +54,16 @@ jobs:
           filename: metrics/isocalendar.svg
           base: ""
           config_timezone: America/New_York
-          config_theme: dark
+          extras_css: |
+            svg { background: #0d1117; color: #c9d1d9; }
+            h2 { color: #58a6ff; }
           plugin_isocalendar: yes
           plugin_isocalendar_duration: full-year
 
-  # ── PageSpeed score for advancedrestoration.net ────────────────────
+  # Needs secrets.PAGESPEED_TOKEN (free Google API key) or it 429s.
   pagespeed:
     runs-on: ubuntu-latest
+    if: ${{ false }}   # flip to `true` once PAGESPEED_TOKEN is set
     steps:
       - uses: lowlighter/metrics@v3.34
         with:
@@ -77,25 +71,11 @@ jobs:
           user: g1-creative
           filename: metrics/pagespeed.svg
           base: ""
-          config_theme: dark
+          extras_css: |
+            svg { background: #0d1117; color: #c9d1d9; }
+            h2 { color: #58a6ff; }
           plugin_pagespeed: yes
+          plugin_pagespeed_token: ${{ secrets.PAGESPEED_TOKEN }}
           plugin_pagespeed_url: https://advancedrestoration.net
           plugin_pagespeed_detailed: yes
           plugin_pagespeed_screenshot: yes
-
-  # ── Recent activity feed ───────────────────────────────────────────
-  activity:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: lowlighter/metrics@v3.34
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: g1-creative
-          filename: metrics/activity.svg
-          base: ""
-          config_timezone: America/New_York
-          config_theme: dark
-          plugin_activity: yes
-          plugin_activity_limit: 6
-          plugin_activity_days: 0
-          plugin_activity_visibility: all

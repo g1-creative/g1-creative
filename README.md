@@ -37,14 +37,4 @@
 
 ---
 
-### ⚡ Speed matters — here's a site I built, scored by Google
-
-<img alt="pagespeed score for advancedrestoration.net" src="./metrics/pagespeed.svg">
-
-### 📰 What I've been up to
-
-<img alt="recent activity" src="./metrics/activity.svg">
-
----
-
 <p align="center"><sub>Everything on this page regenerates itself daily via GitHub Actions.</sub></p>
